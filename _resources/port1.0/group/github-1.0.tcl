@@ -71,7 +71,10 @@ proc github.setup {gh_author gh_project gh_version {gh_tag_prefix ""} {gh_tag_su
         name                ${github.project}
     }
 
-    version                 ${github.version}
+    if {!([info exists PortInfo(version)] && (${PortInfo(version)} ne ${github.version}))} {
+        version             ${github.version}
+    }
+
     default homepage        ${github.homepage}
     git.url                 ${github.homepage}.git
     git.branch              [join ${github.tag_prefix}]${github.version}[join ${github.tag_suffix}]
