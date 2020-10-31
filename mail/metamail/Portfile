@@ -1,0 +1,41 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+
+name                metamail
+version             2.7
+categories          mail
+platforms           darwin
+supported_archs     x86_64
+license             MIT
+maintainers         {outlook.com:mohd.akram @mohd-akram} openmaintainer
+
+description         A utility for integrating MIME into electronic mail programs
+
+long_description    {*}${description}
+
+homepage            http://www.guppylake.com/~nsb
+
+master_sites        http://www.guppylake.com/~nsb/metamail
+distname            mm${version}
+extract.suffix      .tar.Z
+
+checksums           rmd160  ae322cad0653140cbe7f0148ce48757df98c26b0 \
+                    sha256  9c0281bdce32a7d3e61c1e3c703a748acb5d216d082a718efa316f68b9808a96 \
+                    size    262881
+
+worksrcdir          ${distname}/src
+
+patchfiles          patch-makefile.diff patch-richtext.diff patch-uue.diff
+
+configure.cmd       env | grep -E '^(CC?|CPP|CXX|LD)(FLAGS)?='
+configure.pre_args  > config.mk
+configure.cflags-append \
+                    -std=c90 -Wno-implicit-function-declaration -Wno-return-type
+
+build.target
+
+destroot.destdir    INSTROOT=${destroot}${prefix}
+destroot.args       MAN1DIR=${destroot}${prefix}/share/man/man1 \
+                    MAN4DIR=${destroot}${prefix}/share/man/man4
+destroot.target     install-all

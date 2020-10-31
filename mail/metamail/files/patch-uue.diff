@@ -1,0 +1,29 @@
+--- metamail/uue.c.orig	1993-07-28 22:31:02.000000000 +0400
++++ metamail/uue.c	2020-10-31 22:02:28.000000000 +0400
+@@ -30,7 +30,7 @@
+ }
+ 
+ 
+-getline (buf, size, fp)
++get_line (buf, size, fp)
+ char *buf;
+ int size;
+ FILE *fp;
+@@ -70,7 +70,7 @@
+     char buf[63];
+ 
+     while (1) {
+-	if (getline (buf, sizeof buf, infp) < 0) {
++	if (get_line (buf, sizeof buf, infp) < 0) {
+ 	    fprintf (stderr, "Premature EOF!\n");
+ 	    return;
+ 	}
+@@ -82,7 +82,7 @@
+ 	}
+     }	
+     while (1) {
+-	if (getline (buf, sizeof buf, infp) < 0) {
++	if (get_line (buf, sizeof buf, infp) < 0) {
+ 	    fprintf (stderr, "Premature EOF!\n");
+ 	    return;
+ 	}
