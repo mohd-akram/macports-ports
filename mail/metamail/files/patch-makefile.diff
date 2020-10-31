@@ -1,0 +1,16 @@
+--- Makefile.orig	1994-01-26 21:32:33.000000000 +0400
++++ Makefile	2020-10-31 21:45:31.000000000 +0400
+@@ -145,7 +145,7 @@
+ 	    echo "installing man page $$target";\
+ 	    ${CP} $$file $$target; 		\
+ 	done)
+-	@echo "Renaming old mailcap file to $(MAILCAPDIR)/mailcap.old
++	@echo "Renaming old mailcap file to $(MAILCAPDIR)/mailcap.old"
+ 	-mv $(MAILCAPDIR)/mailcap $(MAILCAPDIR)/mailcap.old
+ 	@echo "installing file $(MAILCAPDIR)/mailcap"
+ 	${CP} mailcap $(MAILCAPDIR)
+@@ -196,3 +196,4 @@
+ 	-${RM} man/mimencode.1
+ 
+ clobber: clean cleanambin cleanbin cleanman
++include config.mk
