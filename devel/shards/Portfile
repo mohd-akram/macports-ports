@@ -3,7 +3,8 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        crystal-lang shards 0.9.0 v
+github.setup        crystal-lang shards 0.14.0 v
+github.tarball_from archive
 
 categories          devel
 platforms           darwin
@@ -16,15 +17,33 @@ long_description    Shards is a dependency manager for the Crystal Programming L
 
 depends_lib         port:crystal
 
-checksums           rmd160  ebefd07b9c067315b9804d8ebc9a657a24d1d70d \
-                    sha256  12b6483852b8cd487e4639f3ccae7fb39f26602406038ef292ed95713b561425 \
-                    size    41277
+set molinillo_ver   0.2.0
+set molinillo_dist  crystal-molinillo-${molinillo_ver}
+
+master_sites        ${master_sites}:shards \
+                    https://github.com/crystal-lang/crystal-molinillo/archive/v${molinillo_ver}:molinillo
+distfiles           ${distfiles}:shards \
+                    ${molinillo_dist}${extract.suffix}:molinillo
+
+checksums           ${distname}${extract.suffix} \
+                    rmd160  f3d83975f89185f49d0e9b54c4a15feca2e847b1 \
+                    sha256  5bab109a967947c2ce51459dd7d9a4c96f2f02b987c9e3c3bfe35d4a1b2f059d \
+                    size    61662 \
+                    ${molinillo_dist}${extract.suffix} \
+                    rmd160  6937976d1e249b1de948b8a88acc549b0f9f42ca \
+                    sha256  e231cf2411a6a11a1538983c7fb52b19e650acc3338bd3cdf6fdb13d6463861a \
+                    size    23959
 
 pre-fetch {
     if {${os.major} < 16} {
         ui_error "${name} @${version} requires macOS 10.12 or newer."
         return -code error "incompatible macOS version"
     }
+}
+
+post-extract {
+    file mkdir ${worksrcpath}/lib
+    file copy ${workpath}/${molinillo_dist} ${worksrcpath}/lib/molinillo
 }
 
 use_configure       no
@@ -34,4 +53,3 @@ build.args          CRFLAGS=--release
 destroot.args       PREFIX=${prefix}
 
 test.run            yes
-test.cmd            bin/shards install && make test
