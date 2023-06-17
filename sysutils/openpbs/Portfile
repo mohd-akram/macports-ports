@@ -1,0 +1,71 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+
+github.setup        openpbs openpbs f94d319
+github.tarball_from archive
+version             23.06.06
+
+categories          sysutils
+license             AGPL-3
+maintainers         {outlook.com:mohd.akram @mohd-akram} openmaintainer
+
+description         HPC workload manager and job scheduler
+
+long_description    An HPC workload manager and job scheduler for desktops, \
+                    clusters, and clouds.
+
+homepage            https://www.openpbs.org/
+
+set pgsql           postgresql15
+
+depends_build       port:pkgconfig
+
+depends_lib         path:lib/libssl.dylib:openssl \
+                    port:expat \
+                    port:hwloc \
+                    port:libedit \
+                    port:libical \
+                    port:${pgsql} \
+                    port:python311 \
+                    port:swig-python \
+                    port:tcl \
+                    port:tk \
+                    port:xorg-libX11 \
+                    port:xorg-libXt
+
+checksums           rmd160  ee284b962a77ef81e4d657f15201c299caa4c29c \
+                    sha256  3b008a324c91970906fd1f409920c959eea68e407c9b99aae10d992f97b34204 \
+                    size    3493432
+
+patchfiles          patch-src.diff
+
+use_autoreconf      yes
+
+configure.args      --with-swig=${prefix} \
+                    --with-tcl=${prefix} \
+                    --with-pbs-conf-file=${prefix}/etc/pbs.conf \
+                    --with-pbs-server-home=${prefix}/var/spool/pbs \
+                    --with-core-limit=0
+
+configure.cppflags-append \
+                    -I${prefix}/include/${pgsql}
+configure.ldflags-append \
+                    -L${prefix}/lib/${pgsql}
+
+destroot.args       sysprofiledir=${prefix}/etc/profile.d \
+                    unitfiledir=${prefix}/lib/systemd/system
+
+post-destroot {
+    system "chmod 4755 ${destroot}${prefix}/sbin/pbs_iff ${destroot}${prefix}/sbin/pbs_rcp"
+    delete ${destroot}${prefix}/lib/init.d/limits.pbs_mom
+}
+
+notes "
+    Run the following to set up the OpenPBS server:
+
+        sudo port install ${pgsql}-server
+        sudo port select postgresql ${pgsql}
+        sudo ${prefix}/libexec/pbs_postinstall
+"

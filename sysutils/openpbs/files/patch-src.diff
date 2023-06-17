@@ -1,0 +1,25 @@
+diff --git src/lib/Libtpp/tpp_em.c src/lib/Libtpp/tpp_em.c
+index 66c3e804..f705b290 100644
+--- src/lib/Libtpp/tpp_em.c
++++ src/lib/Libtpp/tpp_em.c
+@@ -446,7 +446,7 @@ tpp_em_add_fd(void *em_ctx, int fd, int event_mask)
+ 	int i;
+ 
+ 	if (fd > ctx->curr_nfds - 1) {
+-		nfds = fd + 1000;
++		nfds = fd + 200;
+ 		ctx->fds = realloc(ctx, sizeof(struct pollfd) * nfds);
+ 		if (!ctx->fds) {
+ 			free(ctx);
+diff --git src/lib/Libutil/misc_utils.c src/lib/Libutil/misc_utils.c
+index 94caffbf..a7272dc9 100644
+--- src/lib/Libutil/misc_utils.c
++++ src/lib/Libutil/misc_utils.c
+@@ -2384,6 +2384,7 @@ parse_servername(char *name, unsigned int *service)
+ void
+ set_proc_limits(char *core_limit, int fdlimit)
+ {
++	return;
+ #ifdef RLIMIT_CORE
+ 	int char_in_cname = 0;
+ 	extern char *msg_corelimit;
