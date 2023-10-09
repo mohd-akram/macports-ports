@@ -3,10 +3,9 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        chapel-lang chapel 1.20.0
+github.setup        chapel-lang chapel 1.32.0
+github.tarball_from archive
 categories          lang parallel science
-platforms           darwin
-supported_archs     i386 x86_64
 maintainers         {takeshi @tenomoto} openmaintainer
 description         parallel programming language
 long_description \
@@ -14,18 +13,16 @@ long_description \
     being developed by Cray Inc. as part of the DARPA-led \
     High Productivity Computing Systems program (HPCS).
 license             BSD
-homepage            http://chapel.cray.com/
+homepage            https://chapel-lang.org
 
-checksums           rmd160  23b5c1a70e94dcc286565146bcf0c76d095f1e76 \
-                    sha256  fcd73ba194f5f66e07149270dde4fb1f132204bd3ccb5a513c9403755ebcc7ae \
-                    size    152898957
+checksums           rmd160  08f589201d73a54c5e52b6d4162a3d35f26061c5 \
+                    sha256  a359032b4355774e250fb2796887b3bbf58d010c468faba97f7b471bc6bab57d \
+                    size    193784201
 
 use_configure       no
 use_parallel_build  no
 
 configure.optflags  -O3
-
-variant universal {}
 
 set py_ver          3.11
 set py_ver_nodot    [string map {. {}} ${py_ver}]
@@ -44,8 +41,9 @@ build.env-append    CHPL_HOST_COMPILER=clang \
                     CHPL_MEM=cstdlib \
                     CHPL_GMP=none \
                     CHPL_REGEXP=none \
-                    CHPL_LLVM=none
-build.env-append    LDFLAGS=[get_canonical_archflags ld]
+                    CHPL_LLVM=none \
+                    LDFLAGS=[get_canonical_archflags ld]
+
 build.args          CXX=${configure.cxx} \
                     CC=${configure.cc} \
                     OPT_CFLAGS="${configure.optflags} [get_canonical_archflags cc]"
@@ -75,8 +73,6 @@ destroot {
         file copy ${worksrcpath}/highlight/${d} ${destroot}${prefix}/etc/${name}
     }
 }
-
-variant universal {}
 
 notes "
 set environmental variables following ${prefix}/lib/${name}/util/quickstart/setchplenv.bash
