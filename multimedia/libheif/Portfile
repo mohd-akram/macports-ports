@@ -6,7 +6,7 @@ PortGroup                   cmake 1.1
 PortGroup                   compiler_blacklist_versions 1.0
 
 github.setup                strukturag libheif 1.17.6 v
-revision                    0
+revision                    1
 
 checksums                   rmd160  a4681278c601668741808d330e134b70dbacf1c5 \
                             sha256  8390baf4913eda0a183e132cec62b875fb2ef507ced5ddddc98dfd2f17780aee \
@@ -32,9 +32,11 @@ depends_lib-append \
                             port:libpng \
                             port:svt-av1 \
                             port:webp \
-                            port:x265
+                            port:kvazaar
 
 configure.args-append \
+                            -DWITH_X265:BOOL=OFF \
+                            -DWITH_KVAZAAR:BOOL=ON \
                             -DWITH_RAV1E:BOOL=OFF
 
 # Disable dynamic plugin loading, due to upstream issue:
