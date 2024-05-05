@@ -1,0 +1,36 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+
+github.setup        brailcom speechd 0.12.0-rc3
+github.tarball_from releases
+name                speech-dispatcher
+revision            0
+categories          audio
+license             GPL-2+
+maintainers         {makr @mohd-akram} openmaintainer
+
+description         Common high-level interface to speech synthesis
+
+long_description    Speech Dispatcher provides a high-level device independent \
+                    layer for access to speech synthesis through a simple, \
+                    stable and well documented interface.
+
+checksums           rmd160  2eb805182bd64daa810d1dc01e8dfb0cf98d3308 \
+                    sha256  bd2b62bfdcf74552acd85e9da4e42fd1ff12b8ea18610a6a1bd6835df767b663 \
+                    size    7338846
+
+distname            ${name}-${version}
+
+depends_build       port:pkgconfig
+
+depends_lib         port:gettext \
+                    port:glib2 \
+                    port:dotconf \
+                    port:libsndfile \
+                    port:espeak-ng \
+                    port:libao
+
+configure.args      --disable-python \
+                    --with-pulse=no
