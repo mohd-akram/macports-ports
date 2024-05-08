@@ -6,6 +6,7 @@ PortGroup           github 1.0
 PortGroup           compiler_blacklist_versions 1.0
 
 github.setup        OpenShot libopenshot-audio 0.3.2 v
+revision            1
 
 github.tarball_from archive
 checksums           rmd160  711cb989ed328baa7ecdf8b71ab92582878b3161 \
