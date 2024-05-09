@@ -279,12 +279,18 @@ variant lastfm description {Add support for last.fm} {
                             -Dscrobbler2=true
 }
 
-variant ampache requires qt5 description {Add support for browsing music on an Ampache server} {
+variant ampache description {Add support for browsing music on an Ampache server} {
     depends_lib-append      port:ampache_browser
     configure.args-replace  -Dampache=false \
                             -Dampache=true
 
-    require_active_variants ampache_browser qt5
+    if {[variant_isset qt5]} {
+        require_active_variants ampache_browser qt5
+    }
+
+    if {[variant_isset qt6]} {
+        require_active_variants ampache_browser qt6
+    }
 }
 
 variant mms description {Add support for Microsoft Media Server (MMS) streams} {
@@ -334,7 +340,7 @@ variant sdl2 conflicts sdl1 description {Add SDL audio output via libsdl2} {
                             -Dsdlout=true
 }
 
-variant qt5 description {Add Qt5 support} {
+variant qt5 conflicts qt6 description {Add Qt5 support} {
     PortGroup   qt5 1.0
 
     qt5.depends_component   qtmultimedia
@@ -347,6 +353,21 @@ variant qt5 description {Add Qt5 support} {
                             -Dvumeter=true
 
     require_active_variants audacious-core qt5
+}
+
+variant qt6 conflicts qt5 description {Add Qt6 support} {
+    PortGroup   qt6 1.0
+
+    qt6.depends_lib         qtmultimedia
+
+    configure.args-replace  -Dqt=false \
+                            -Dqt=true \
+                            -Dqt6=false \
+                            -Dqt6=true \
+                            -Dqtaudio=false \
+                            -Dqtaudio=true
+
+    require_active_variants audacious-core qt6
 }
 
 variant gtk2 conflicts gtk3 description {Add GTK2 support} {
@@ -393,23 +414,38 @@ if {![variant_isset sdl1]} {
     default_variants-append +sdl2 +ffmpeg
 }
 
-# Need either one of gtk2, gtk3 or Qt5 to have a GUI.
-# Default to qt5, which is preferred by upstream.
-if {![variant_isset gtk2] && ![variant_isset gtk3]} {
+# Need either one of gtk2, gtk3, Qt5 or Qt6 to have a GUI.
+# Default to qt6, which is preferred by upstream.
+if {![variant_isset gtk2] && ![variant_isset gtk3] && ![variant_isset qt5]} {
+    # https://doc-snapshots.qt.io/qt6-dev/macos.html#supported-versions
+    if {${os.major} >= 21 || ${os.platform} ne "darwin"} {
+        default_variants-append +qt6
+    }
+}
+
+if {![variant_isset gtk2] && ![variant_isset gtk3] && ![variant_isset qt6]} {
     default_variants-append +qt5
 }
 
 # UI required variants
 
-# Add other variants to the "full" set if gtk2, gtk3 or qt5 have been enabled.
-if {[variant_isset full] && ([variant_isset gtk2] || [variant_isset gtk3] || [variant_isset qt5])} {
+# Add other variants to the "full" set if gtk2, gtk3, qt5 or qt6 have been enabled.
+if {[variant_isset full] && ([variant_isset gtk2] || [variant_isset gtk3] || [variant_isset qt5] || [variant_isset qt6])} {
     default_variants-append +opengl
 }
 
 # OpenGL only supported with gtk2, gtk3 or Qt5.
-if {![variant_isset gtk2] && ![variant_isset gtk3] && ![variant_isset qt5] && [variant_isset opengl]} {
-    ui_debug "The opengl variant requires either the gtk2, gtk3 or qt5 variant to be enabled."
-    error "+opengl requires +gtk2, +gtk3 or +qt5."
+if {![variant_isset gtk2] && ![variant_isset gtk3] && ![variant_isset qt5] && ![variant_isset qt6] && [variant_isset opengl]} {
+    ui_debug "The opengl variant requires either the gtk2, gtk3, qt5 or qt6 variant to be enabled."
+    error "+opengl requires +gtk2, +gtk3, +qt5 or +qt6."
+}
+
+# Qt only
+
+# Ampache only supported with Qt5 or Qt6
+if {![variant_isset qt5] && ![variant_isset qt6] && [variant_isset ampache]} {
+    ui_debug "The ampache variant requires either the qt5 or qt6 variants to be enabled."
+    error "+ampache requires +qt5 or +qt6."
 }
 
 # GTK only
