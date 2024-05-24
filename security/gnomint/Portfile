@@ -3,11 +3,10 @@
 PortSystem          1.0
 
 name                gnomint
-version             1.2.1
-revision            5
+version             1.3.0
+revision            0
 categories          security
-platforms           darwin
-maintainers         phlo.org:fgp
+maintainers         phlo.org:fgp openmaintainer
 license             GPL-3+
 
 description         Single-user PKI with graphical (GTK) and CLI interface
@@ -17,18 +16,16 @@ long_description    gnoMint provides a GUI and a CLI to manage a simple PKI. \
                     creating/importing and signing of CSRs and certificate \
                     revokation. Stores the whole PKI in a single SQLite file.
 
-homepage            http://gnomint.sourceforge.net/
-master_sites        sourceforge:project/gnomint/gnomint/${version}
+homepage            https://gnomint.sourceforge.net/
+master_sites        sourceforge:project/gnomint/${version}
 
-checksums           rmd160  6a55b7329aa81c895a6f9bfb04b82d9759f5a10f \
-                    sha256  6186ca6073e912bad5e0b026bc704430098a54392f3741d62929cc6fca3c38b0
+checksums           rmd160  aea27ab52c2f2f9b92d4ea6433860bbeb2c0c2f1 \
+                    sha256  85b404d458f22c1b1337c0063f659cdf3da4fa1d02baf0c50efad9e897194834 \
+                    size    757968
 
-depends_build       port:intltool \
-                    port:pkgconfig \
+depends_build       port:pkgconfig \
                     port:gnome-common \
-                    port:autoconf \
-                    port:automake \
-                    port:libtool
+                    port:intltool
 
 depends_lib         port:gconf \
                     port:gettext \
@@ -39,15 +36,3 @@ depends_lib         port:gconf \
                     port:readline \
                     port:sqlite3 \
                     port:zlib
-
-patchfiles          patch-configure.in.diff \
-                    patch-src-Makefile.am.diff \
-                    patch-src-import.c.diff
-
-# reconfigure using upstream autogen.sh for intltool 0.51 compatibility
-
-post-patch {
-    xinstall -m 755 ${filespath}/autogen.sh ${worksrcpath}
-}
-
-configure.cmd       ./autogen.sh
