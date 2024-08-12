@@ -1,0 +1,31 @@
+--- lib/readline/misc.c.orig	2022-04-05 18:30:05
++++ lib/readline/misc.c	2024-05-20 19:43:37
+@@ -102,7 +102,8 @@
+ {
+   int c;
+ 
+-  rl_message ("(arg: %d) ", rl_arg_sign * rl_numeric_arg);
++  if (rl_editing_mode == emacs_mode)
++    rl_message ("(arg: %d) ", rl_arg_sign * rl_numeric_arg);
+   RL_SETSTATE(RL_STATE_MOREINPUT);
+   c = rl_read_key ();
+   RL_UNSETSTATE(RL_STATE_MOREINPUT);
+@@ -229,7 +230,8 @@
+   if (RL_ISSTATE (RL_STATE_CALLBACK))
+     {
+       _rl_arg_dispatch (_rl_argcxt, key);
+-      rl_message ("(arg: %d) ", rl_arg_sign * rl_numeric_arg);
++      if (rl_editing_mode == emacs_mode)
++        rl_message ("(arg: %d) ", rl_arg_sign * rl_numeric_arg);
+       return 0;
+     }
+   else
+@@ -271,7 +273,7 @@
+     }
+ 
+   r = _rl_arg_dispatch (cxt, c);
+-  if (r > 0)
++  if (rl_editing_mode == emacs_mode && r > 0)
+     rl_message ("(arg: %d) ", rl_arg_sign * rl_numeric_arg);
+   return (r != 1);
+ }

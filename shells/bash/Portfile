@@ -12,6 +12,7 @@ subport bash50 {
     set bash_patchlevel 18
 }
 version             ${bash_version}.${bash_patchlevel}
+revision            1
 distname            ${name}-${bash_version}
 categories          shells
 platforms           darwin freebsd
@@ -182,6 +183,8 @@ if {${subport} eq ${name}} {
                         rmd160  2ec870b706258160f24334b82faf264dbcd2633a \
                         sha256  7b9c77daeca93ff711781d7537234166e83ed9835ce1ee7dcd5742319c372a16 \
                         size    1529
+
+    patchfiles-append   patch-vi-count.diff
 } elseif {${subport} eq "bash50"} {
    checksums           ${distname}${extract.suffix} \
                        rmd160  a081428a896d617855499376b670eca3433a27c1 \
