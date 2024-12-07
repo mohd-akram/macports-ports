@@ -14,7 +14,7 @@ compiler.cxx_standard   2017
 
 name                    nodejs19
 version                 19.9.0
-revision                3
+revision                2
 
 categories              devel net
 license                 {MIT BSD}

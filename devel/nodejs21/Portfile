@@ -9,7 +9,7 @@ compiler.cxx_standard   2017
 
 name                    nodejs21
 version                 21.7.3
-revision                2
+revision                1
 
 categories              devel net
 license                 {MIT BSD}
