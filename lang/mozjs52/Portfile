@@ -10,9 +10,8 @@ deprecated.eol_version yes
 
 name                mozjs52
 version             52.6.0
-revision            8
+revision            9
 categories          lang
-platforms           darwin
 license             {MPL-2 LGPL-2.1+}
 maintainers         {devans @dbevans} openmaintainer
 description         JavaScript-C Engine
@@ -36,10 +35,15 @@ depends_build       port:autoconf213 \
                     port:pkgconfig \
                     port:python27
 
-depends_lib         path:lib/pkgconfig/icu-uc.pc:icu \
+depends_lib         path:lib/pkgconfig/icu-uc.pc:icu-devel \
                     port:nspr \
                     port:xorg-libX11 \
                     port:xorg-libXt
+
+
+# Required for ICU
+compiler.cxx_standard   2017
+configure.cxxflags-append   -std=c++17
 
 # When modifying this blacklist, also update the gjs blacklist.
 # Requires clang-3.6 or equivalent
