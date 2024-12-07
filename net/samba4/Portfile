@@ -12,7 +12,7 @@ legacysupport.newest_darwin_requires_legacy 16
 name                samba4
 conflicts           samba3
 version             4.21.2
-revision            0
+revision            1
 checksums           rmd160  f8b0751600bb857aadc37767c8edf0afd57bf3c1 \
                     sha256  bde66be3d2025cb949de38518ad2652f3795f824c7fa89d4e443ede1ae828ea6 \
                     size    42647875
