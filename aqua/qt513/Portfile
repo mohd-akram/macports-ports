@@ -1179,6 +1179,10 @@ foreach {module module_info} [array get modules] {
             configure.universal_cxxflags
             configure.universal_cppflags
 
+            # ICU requires C++17
+            compiler.cxx_standard   2017
+            configure.args-append   QMAKE_CXXFLAGS_GNUCXX11=-std=c++17
+
             # configure script looks for perl but doesn't seem to use it for our configuration
 
             # configure script uses gawk if it can find it,
@@ -1369,6 +1373,10 @@ foreach {module module_info} [array get modules] {
 
                 # avoid unnecessary dependency on OpenSSL
                 configure.args-append "QMAKE_LIBS_OPENSSL="
+
+                # ICU requires C++17
+                compiler.cxx_standard   2017
+                qt5.cxxflags-append     -std=c++17
             }
 
             # special case
@@ -1411,6 +1419,10 @@ foreach {module module_info} [array get modules] {
                         reinplace "s|return 0;|return 0;\\\n#error turn off test|g" ${worksrcpath}/Tools/qmake/config.tests/${test}/${test}.cpp
                     }
                 }
+
+                # ICU requires C++17
+                compiler.cxx_standard   2017
+                qt5.cxxflags-append     -std=c++17
             }
 
             # special case
