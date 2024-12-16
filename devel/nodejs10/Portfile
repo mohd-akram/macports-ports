@@ -13,12 +13,11 @@ deprecated.eol_version  yes
 # this force is OK as node does not link against any other c++ libs
 depends_lib-append      port:libcxx
 configure.cxx_stdlib    libc++
-# ICU requires C++17
-compiler.cxx_standard   2017
+compiler.cxx_standard   2014
 
 name                    nodejs10
 version                 10.24.1
-revision                6
+revision                5
 
 categories              devel net
 platforms               darwin
