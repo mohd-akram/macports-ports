@@ -32,4 +32,4 @@ depends_build       port:intltool \
 
 depends_lib         path:lib/pkgconfig/glib-2.0.pc:glib2 \
                     port:gtk-doc \
-                    path:lib/pkgconfig/libsoup-2.4.pc:libsoup
+                    path:lib/pkgconfig/libsoup-2.4.pc:libsoup-2.4

@@ -22,7 +22,7 @@ depends_build       port:pkgconfig
 depends_lib         path:lib/pkgconfig/gnutls.pc:gnutls \
                     port:telepathy-glib \
                     port:libxslt \
-                    path:lib/pkgconfig/libsoup-2.4.pc:libsoup \
+                    path:lib/pkgconfig/libsoup-2.4.pc:libsoup-2.4 \
                     port:libnice \
                     port:cyrus-sasl2 \
                     port:py27-twisted

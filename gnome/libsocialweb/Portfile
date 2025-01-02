@@ -32,7 +32,7 @@ depends_lib         path:lib/pkgconfig/glib-2.0.pc:glib2 \
                     port:gconf \
                     port:dbus-glib \
                     port:json-glib \
-                    path:lib/pkgconfig/libsoup-2.4.pc:libsoup \
+                    path:lib/pkgconfig/libsoup-2.4.pc:libsoup-2.4 \
                     port:libgnome-keyring \
                     port:rest \
                     path:bin/vala:vala

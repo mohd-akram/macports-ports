@@ -38,7 +38,7 @@ depends_lib         port:desktop-file-utils \
                     port:libxml2 \
                     port:json-glib \
                     port:libgcrypt \
-                    path:lib/pkgconfig/libsoup-2.4.pc:libsoup \
+                    path:lib/pkgconfig/libsoup-2.4.pc:libsoup-2.4 \
                     port:gstreamer1
 
 depends_run         port:adwaita-icon-theme \
