@@ -41,6 +41,7 @@ default_variants    +doc +pcre +credential_osxkeychain +diff_highlight
 
 categories          devel
 license             GPL-2 LGPL-2.1+
+license_noconflict  curl
 installs_libs       no
 
 patch.pre_args-replace  -p0 -p1
