@@ -1,0 +1,168 @@
+From c71ae77ff249a82dbdb9348f49439d1d42364c3b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Henrik=20Grubbstr=C3=B6m=20=28Grubba=29?=
+ <grubba@grubba.org>
+Date: Fri, 5 Sep 2025 08:07:53 +0200
+Subject: [PATCH] GTK2 [MacOS X]: Support GdkNativeWindow being a pointer.
+
+Also fixes a few other type warnings.
+---
+ src/post_modules/GTK2/source/gdkevent.pre     |  8 ++++---
+ src/post_modules/GTK2/source/gdkpixmap.pre    |  2 +-
+ src/post_modules/GTK2/source/gdkwindow.pre    |  6 ++---
+ src/post_modules/GTK2/source/gtkclipboard.pre |  2 +-
+ src/post_modules/GTK2/source/gtkplug.pre      | 19 +++++++++++----
+ src/post_modules/GTK2/source/gtksocket.pre    | 24 +++++++++++++++++--
+ 6 files changed, 46 insertions(+), 15 deletions(-)
+
+diff --git a/src/post_modules/GTK2/source/gdkevent.pre b/src/post_modules/GTK2/source/gdkevent.pre
+index d1f230a7d9e..2cbd6e0732d 100644
+--- src/post_modules/GTK2/source/gdkevent.pre
++++ src/post_modules/GTK2/source/gdkevent.pre
+@@ -7,7 +7,7 @@ class GDK2.Event;
+ #define GTK_GDKEVENT(X) ((GdkEvent *)X)
+ 
+ #define RETURN_NIL() do{ pgtk2_pop_n_elems( args );push_undefined();return; } while(0)
+-#define RETURN_INT(X) do { pgtk2_pop_n_elems( args );push_int( X ); return; } while(0)
++#define RETURN_INT(X) do { pgtk2_pop_n_elems( args );push_int64( X ); return; } while(0)
+ #define RETURN_FLOAT(X) do { pgtk2_pop_n_elems( args );push_float( X ); return; } while(0)
+ #define REF_RETURN_STRING(X) do { pgtk2_pop_n_elems( args );ref_push_string( X ); return; } while(0)
+ #define RETURN_STRING(X) do { pgtk2_pop_n_elems( args );push_string( X ); return; } while(0)
+@@ -149,7 +149,9 @@ mixed _index(string ind)
+      if( is_same_string(index,_STR("selection")) ) RETURN_ATOM( e->selection.selection );
+      if( is_same_string(index,_STR("target")) ) RETURN_ATOM( e->selection.target );
+      if( is_same_string(index,_STR("property")) ) RETURN_ATOM( e->selection.property );
+-     if( is_same_string(index,_STR("requestor")) ) RETURN_INT( e->selection.requestor );
++     if( is_same_string(index,_STR("requestor")) ) {
++       RETURN_INT( (ptrdiff_t)e->selection.requestor );
++     }
+      break;
+ 
+    case GDK_PROXIMITY_IN:
+@@ -422,7 +424,7 @@ mapping cast(string to)
+      ref_push_string(_STR("selection")); push_atom( e->selection.selection );
+      ref_push_string(_STR("target"));    push_atom( e->selection.target );
+      ref_push_string(_STR("property"));  push_atom( e->selection.property );
+-     ref_push_string(_STR("requestor")); push_int( e->selection.requestor );
++     ref_push_string(_STR("requestor")); push_int64( (ptrdiff_t)e->selection.requestor );
+      break;
+ 
+    case GDK_PROXIMITY_IN:
+diff --git a/src/post_modules/GTK2/source/gdkpixmap.pre b/src/post_modules/GTK2/source/gdkpixmap.pre
+index 7b1a90e020d..f8ce8549f3c 100644
+--- src/post_modules/GTK2/source/gdkpixmap.pre
++++ src/post_modules/GTK2/source/gdkpixmap.pre
+@@ -58,7 +58,7 @@ void create(int|object image)
+     if (f)
+       g_object_unref(i);
+   } else if (args && TYPEOF(Pike_sp[-1]) == PIKE_T_INT) {
+-    gp=gdk_pixmap_foreign_new(Pike_sp[-1].u.integer);
++    gp=gdk_pixmap_foreign_new((GdkNativeWindow)(ptrdiff_t)Pike_sp[-1].u.integer);
+     THIS->obj=G_OBJECT(gp);
+     if (!THIS->obj)
+       Pike_error("Failed to find remote pixmap\n");
+diff --git a/src/post_modules/GTK2/source/gdkwindow.pre b/src/post_modules/GTK2/source/gdkwindow.pre
+index 7b81266e38e..a1b30d9aa72 100644
+--- src/post_modules/GTK2/source/gdkwindow.pre
++++ src/post_modules/GTK2/source/gdkwindow.pre
+@@ -14,9 +14,9 @@ void create(GDK2.Window|int parent, mapping|void attributes)
+   if (TYPEOF(Pike_sp[-args]) == PIKE_T_INT)
+   {
+     GdkWindow *w;
+-    INT_TYPE id;
+-    get_all_args("create",args,"%i",&id);
+-    w=gdk_window_foreign_new(id);
++    INT64 id;
++    get_all_args(NULL,args,"%l",&id);
++    w=gdk_window_foreign_new((GdkNativeWindow)(ptrdiff_t)id);
+     THIS->obj=G_OBJECT(w);
+     if (!THIS->obj)
+       Pike_error("The window with id 0x%lx does not exist\n",
+diff --git a/src/post_modules/GTK2/source/gtkclipboard.pre b/src/post_modules/GTK2/source/gtkclipboard.pre
+index d744b0a26f3..7f8a44d5c4b 100644
+--- src/post_modules/GTK2/source/gtkclipboard.pre
++++ src/post_modules/GTK2/source/gtkclipboard.pre
+@@ -119,7 +119,7 @@ string wait_for_rich_text(GTK2.TextBuffer buffer)
+ 			GTK_TEXT_BUFFER(get_gobject(o1)),&a,&len);
+     pgtk2_pop_n_elems(args);
+     if (res)
+-      push_string(make_shared_binary_string(res,len));
++      push_string(make_shared_binary_string((char *)res,len));
+     else
+       push_string(empty_pike_string);
+   }
+diff --git a/src/post_modules/GTK2/source/gtkplug.pre b/src/post_modules/GTK2/source/gtkplug.pre
+index 1bf7ade6da5..82aced19ca0 100644
+--- src/post_modules/GTK2/source/gtkplug.pre
++++ src/post_modules/GTK2/source/gtkplug.pre
+@@ -26,10 +26,10 @@ void create(int|mapping(string:mixed) socket_id_or_props)
+   pgtk2_verify_setup();
+   {
+     if (TYPEOF(Pike_sp[-args]) == PIKE_T_INT) {
+-      INT_TYPE id;
++      INT64 id;
+       GtkWidget *gp;
+-      get_all_args("create",args,"%i",&id);
+-      gp=gtk_plug_new(id);
++      get_all_args(NULL, args, "%l", &id);
++      gp = gtk_plug_new((GdkNativeWindow)(ptrdiff_t)id);
+       THIS->obj=G_OBJECT(gp);
+     } else {
+       INIT_WITH_PROPS(GTK_TYPE_PLUG);
+@@ -39,6 +39,15 @@ void create(int|mapping(string:mixed) socket_id_or_props)
+   pgtk2__init_this_object();
+ }
+ 
+-int get_id();
++int get_id()
+ //! Gets the window id of this widget.
+-
++{
++  pgtk2_verify_inited();
++  {
++    /* NB: GdkNativeWindow is a pointer type on NT and MacOS X. */
++    GdkNativeWindow a1;
++    a1 = gtk_plug_get_id( GTK_PLUG(THIS->obj) );
++    my_pop_n_elems(args);
++    PGTK_PUSH_INT( (ptrdiff_t)a1 );
++  }
++}
+diff --git a/src/post_modules/GTK2/source/gtksocket.pre b/src/post_modules/GTK2/source/gtksocket.pre
+index 0187220abd2..06a25e812dd 100644
+--- src/post_modules/GTK2/source/gtksocket.pre
++++ src/post_modules/GTK2/source/gtksocket.pre
+@@ -51,13 +51,33 @@ int id()
+   push_int64 (wid);
+ }
+ 
+-void add_id(int wid);
++void add_id(int wid)
+ //! Adds an XEMBED client, such as a W(Plug), to the W(Socket).
++{
++  /* NB: GdkNativeWindow is a pointer type on NT and MacOS X. */
++  GdkNativeWindow a0;
++  if( args < 1 )
++    SIMPLE_WRONG_NUM_ARGS_ERROR(NULL, 1);
++  a0 = (GdkNativeWindow)(ptrdiff_t)PGTK_GETINT(&Pike_sp[0-args]);
++  pgtk2_verify_inited();
++  gtk_socket_add_id( GTK_SOCKET(THIS->obj), a0 );
++  RETURN_THIS();
++}
+ 
+-int get_id();
++int get_id()
+ //! Gets the window id of a W(Socket) widget, which can then be used
+ //! to create a client embedded inside the socket, for instance with
+ //! GTK2.Plug->create().
++{
++  pgtk2_verify_inited();
++  {
++    /* NB: GdkNativeWindow is a pointer type on NT and MacOS X. */
++    GdkNativeWindow a1;
++    a1 = gtk_socket_get_id( GTK_SOCKET(THIS->obj) );
++    my_pop_n_elems(args);
++    PGTK_PUSH_INT( (ptrdiff_t)a1 );
++  }
++}
+ 
+ /*
+ int has_plug()

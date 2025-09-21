@@ -3,15 +3,11 @@
 PortSystem          1.0
 
 name                pike
-version             7.6.112
-revision            10
+version             8.0.1956
+revision            0
 categories          lang
 license             GPL-2
 maintainers         nomaintainer
-
-# https://trac.macports.org/ticket/31384
-# https://trac.macports.org/ticket/68011
-known_fail          yes
 
 description         dynamic programming language
 
@@ -21,16 +17,16 @@ long_description    Pike is a dynamic programming language with a syntax \
                     built-in data types allowing simple and really fast \
                     data manipulation.
 
-homepage            http://pike.lysator.liu.se/
-master_sites        ${homepage}pub/pike/all/${version}/
+homepage            https://pike.lysator.liu.se
+master_sites        https://pike.lysator.liu.se/pub/pike/all/${version}/
 
 distname            Pike-v${version}
 
-checksums           md5     3ba03096741d6df839d32a940f4a865c \
-                    sha1    211050346d8efc01068e8ea7443f4743116a51be \
-                    rmd160  8983d5bc150beabd1796ff8f05df43e5cf36f467
+checksums           rmd160  a67090db0aa096c1cc027a2ff969a889d17eaf71 \
+                    sha256  6a0f2677eb579865321bd75118c638c335860157a420a96e52e2765513dad4c0 \
+                    size    11453522
 
-patchfiles          patch-Request.pike
+patchfiles          patch-Request.pike patch-fix-gtk.diff
 
 depends_lib         port:bzip2 \
                     port:zlib \
@@ -125,20 +121,17 @@ destroot.destdir    buildroot=${destroot} INSTALLARGS="--traditional"
 post-destroot {
     file delete -force ${destroot}${prefix}/bin/pike.syms
     file delete -force ${destroot}${prefix}/doc/pike
-    # move manpage to correct location:
-    move ${destroot}${prefix}/man/man1/pike.1 \
-        ${destroot}${prefix}/share/man/man1/
-    # move documentation to correct location:
-    xinstall -d ${destroot}${prefix}/share/doc/pike-${version}
-    xinstall -W ${worksrcpath} README COPYING COPYRIGHT ANNOUNCE \
-        COMMITTERS ${destroot}${prefix}/share/doc/pike-${version}
+    xinstall -d ${destroot}${prefix}/share/doc/pike
+    copy ${worksrcpath}/README ${worksrcpath}/COPYING ${worksrcpath}/COPYRIGHT \
+        ${worksrcpath}/ANNOUNCE ${worksrcpath}/COMMITTERS \
+        ${destroot}${prefix}/share/doc/pike
     if {[variant_isset doc]} {
-        move ${worksrcpath}/refdoc/modref \
-            ${destroot}${prefix}/share/doc/pike-${version}
-        move ${worksrcpath}/refdoc/traditional_manual \
-            ${destroot}${prefix}/share/doc/pike-${version}
+        copy ${worksrcpath}/refdoc/modref \
+            ${destroot}${prefix}/share/doc/pike
+        copy ${worksrcpath}/refdoc/traditional_manual \
+            ${destroot}${prefix}/share/doc/pike
     }
 }
 
-livecheck.url       http://pike.lysator.liu.se/download/pub/pike/latest-stable/
+livecheck.url       https://pike.lysator.liu.se/download/pub/pike/latest-stable/
 livecheck.regex     Pike-v(\[0-9.\]+)${extract.suffix}
