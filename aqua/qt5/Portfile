@@ -698,8 +698,8 @@ array set modules {
     qtwebengine {
         {}
         "port:python27 port:py27-ply path:bin/ninja:ninja port:gperf port:bison port:flex port:qt5-qtwebengine-gn"
-        "port:fontconfig port:dbus path:lib/pkgconfig/harfbuzz.pc:harfbuzz path:lib/pkgconfig/glib-2.0.pc:glib2 port:zlib port:minizip port:libevent port:libxml2 path:lib/pkgconfig/poppler.pc:poppler port:pulseaudio port:ffmpeg4 port:libopus port:webp port:libpng port:lcms2 port:freetype port:re2 port:snappy"
-        "qtdeclarative qtquickcontrols qtquickcontrols2 qtlocation qtwebchannel qttools"
+        ""
+        "qtdeclarative qtlocation qtwebchannel qttools"
         {"Qt WebEngine"}
         "very large and relatively new"
         "variant overrides: "
