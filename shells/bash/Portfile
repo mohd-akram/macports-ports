@@ -7,6 +7,7 @@ conflicts           bash-devel
 set bash_version    5.3
 set bash_patchlevel 9
 version             ${bash_version}.${bash_patchlevel}
+revision            1
 
 subport bash-devel {
     conflicts           bash
@@ -85,6 +86,8 @@ if {${subport} eq ${name}} {
                         rmd160  c2d2047855b78799e71765d7c6c5feb3e370af42 \
                         sha256  eee30fe78a4b0cb2fe20e010e00308899cfc613e0774ebb3c8557a1552f24f8c \
                         size    2468
+
+    patchfiles-append  patch-vi-count.diff
 }
 
 depends_build           port:bison \
