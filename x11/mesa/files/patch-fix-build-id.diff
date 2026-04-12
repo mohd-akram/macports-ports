@@ -1,0 +1,14 @@
+--- src/util/build_id.h.orig	2026-04-01 21:37:49
++++ src/util/build_id.h	2026-04-12 18:47:10
+@@ -38,7 +38,11 @@
+ 
+ #if HAVE_BUILD_ID
+ 
++#if DETECT_OS_APPLE
++#define BUILD_ID_EXPECTED_HASH_LENGTH 16 /* uuid */
++#else
+ #define BUILD_ID_EXPECTED_HASH_LENGTH 20 /* sha1 */
++#endif
+ 
+ #include <stdint.h>
+ #include "sha1/sha1.h"
