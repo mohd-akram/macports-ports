@@ -1,0 +1,11 @@
+--- configure.orig	2025-08-26 08:01:12
++++ configure	2026-05-30 13:33:27
+@@ -15738,7 +15738,7 @@
+ 	XMLVERS=`$XML_CONFIG --version`
+ 	if test `echo $XMLVERS | sed -e 's/lib.* //' | awk 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'` -ge `echo $LIBXML_REQUIRED_VERSION | sed -e 's/lib.* //' | awk 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
+ 	then
+-		LIBXML_LIBS="$LIBXML_LIBS `$XML_CONFIG --libs`"
++		LIBXML_LIBS="$LIBXML_LIBS `$XML_CONFIG --libs --dynamic`"
+ 		LIBXML_CFLAGS="$LIBXML_CFLAGS `$XML_CONFIG --cflags`"
+ 		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $XMLVERS found" >&5
+ printf "%s\n" "$XMLVERS found" >&6; }

@@ -1,0 +1,38 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+PortGroup           active_variants 1.1
+
+github.setup        Juniper libslax 3.1.6
+revision            0
+categories          textproc
+license             BSD
+maintainers         {makr @mohd-akram} openmaintainer
+
+description         SLAX programming language, a dialect of XSLT
+
+long_description    libslax is a C implementation of the SLAX programming \
+                    language, a dialect of XSLT that is more perl/C-like and \
+                    easier to read/code/use.
+
+checksums           rmd160  554ab9688672746a4fbfe7c6e1fe1b64d0b0f448 \
+                    sha256  e876068b343c54c40872fdb3c06749dd9cc4826f43fe4bd8247743070d51d9fb \
+                    size    18672818
+
+depends_build       port:bison
+
+depends_lib         port:curl \
+                    port:libxml2 \
+                    port:libxslt \
+                    path:lib/libssl.dylib:openssl
+
+patchfiles          patch-configure.diff
+
+post-destroot {
+    # conflicts with xorg-libXi
+    delete ${destroot}${prefix}/include/libxi
+    delete {*}[glob ${destroot}${prefix}/lib/libxi.*]
+}
+
+require_active_variants libxslt debugger
