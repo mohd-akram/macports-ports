@@ -1,0 +1,24 @@
+commit aad2f086e0e5ee9903277f4e41f4fbcf7673681a
+Author: Mohamed Akram <mohd.akram@outlook.com>
+Date:   Mon Sep 21 14:43:47 2026 +0400
+
+    Fix build on macOS < 26
+
+diff --git a/lib/inspect-apps.c b/lib/inspect-apps.c
+index 6e35d001b..f41880f53 100644
+--- lib/inspect-apps.c
++++ lib/inspect-apps.c
+@@ -33,12 +33,8 @@
+ 
+ #if defined __APPLE__ && defined __MACH__
+ /* Define/include necessary items on MacOS X */
+-#include <machine/endian.h>
+-#define __BIG_ENDIAN    BIG_ENDIAN
+-#define __LITTLE_ENDIAN   LITTLE_ENDIAN
+-#define __BYTE_ORDER    BYTE_ORDER
+ #include <libkern/OSByteOrder.h>
+-#define __bswap_32      OSSwapConstInt32
++#define le32toh(x) OSSwapLittleToHostInt32(x)
+ #endif /* __APPLE__ */
+ 
+ #include "ignore-value.h"
