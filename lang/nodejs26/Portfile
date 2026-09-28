@@ -2,12 +2,9 @@
 
 PortSystem              1.0
 
-configure.cxx_stdlib    libc++
-compiler.cxx_standard   2020
-
 name                    nodejs26
 version                 26.10.0
-revision                0
+revision                1
 
 categories              lang net
 license                 {MIT BSD}
@@ -39,10 +36,21 @@ set py_ver_nodot        [string map {. {}} ${py_ver}]
 
 depends_build-append    path:bin/pkg-config:pkgconfig \
                         port:cargo \
+                        port:gtest \
                         port:python${py_ver_nodot}
 
-depends_lib-append      path:lib/pkgconfig/icu-uc.pc:icu \
-                        port:zlib
+depends_lib-append      port:brotli \
+                        port:c-ares \
+                        port:highway \
+                        path:lib/pkgconfig/icu-uc.pc:icu \
+                        port:llhttp \
+                        port:nghttp2 \
+                        port:nghttp3 \
+                        port:ngtcp2 \
+                        port:simdjson \
+                        port:sqlite3 \
+                        port:zlib \
+                        port:zstd
 
 proc rec_glob {basedir pattern} {
     set files [glob -directory $basedir -nocomplain -type f $pattern]
@@ -73,23 +81,24 @@ post-patch {
     }
 }
 
-pre-configure {
-    # Copy zlib headers here because we do not want to prepend the entire
-    # ${prefix}/include to the include path (the build will then attempt to use
-    # ICU headers)
-    file mkdir ${workpath}/zlib-inc
-    file copy ${prefix}/include/zconf.h ${prefix}/include/zlib.h \
-        ${workpath}/zlib-inc/
-}
+compiler.cxx_standard   2020
 
-configure.args-append   --without-npm
-configure.args-append   --with-intl=system-icu
-configure.args-append   --shared-zlib
-configure.args-append   --shared-zlib-includes=${workpath}/zlib-inc
-configure.args-append   --shared-zlib-libpath=${prefix}/lib
+configure.cxx_stdlib    libc++
 
-# V8 only supports ARM and IA-32 processors
-supported_archs         i386 x86_64 arm64
+configure.args          --shared-brotli \
+                        --shared-cares \
+                        --shared-gtest \
+                        --shared-highway \
+                        --shared-http-parser \
+                        --shared-nghttp2 \
+                        --shared-nghttp3 \
+                        --shared-ngtcp2 \
+                        --shared-simdjson \
+                        --shared-sqlite \
+                        --shared-zlib \
+                        --shared-zstd \
+                        --with-intl=system-icu \
+                        --without-npm
 
 universal_variant       no
 
@@ -108,9 +117,6 @@ test.run                yes
 test.cmd                ${build.cmd} -j${build.jobs}
 
 switch $build_arch {
-    i386 {
-        configure.args-append   --dest-cpu=ia32
-    }
     x86_64 {
         configure.args-append   --dest-cpu=x64
     }
